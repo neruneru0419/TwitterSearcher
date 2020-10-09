@@ -5,24 +5,23 @@ import ast
 import os
 from queue import Queue
 import threading
+import sqlite3
 
 class TwitterAuth():
-    def __init__(self, ck, cs, oc):
+    def __init__(self, ck: str, cs: str, oc: str):
         self.consumer_key = ck
         self.consumer_secret = cs
         self.oauth_callback = oc
-        self.auth = ""
-    def oauth(self):
         self.auth = tweepy.OAuthHandler(self.consumer_key, self.consumer_secret, self.oauth_callback)
-    def get_authorization_url(self):
+    def get_authorization_url(self) -> str:
         redirect_url = self.auth.get_authorization_url()
         return redirect_url
-    def set_access_token(self, verifier):
+    def set_access_token(self, verifier: str):
         self.auth.get_access_token(verifier)
         key = self.auth.access_token
         secret = self.auth.access_token_secret
         self.auth.set_access_token(key, secret)
-    def get_API(self, wait_on_rate_limit = False):
+    def get_API(self, wait_on_rate_limit = False) -> tweepy.API:
         return tweepy.API(self.auth)
 
 
@@ -45,12 +44,12 @@ app = Flask(__name__,
 CORS(app)
 consumer_key = os.getenv("consumer_key")
 consumer_secret = os.getenv("consumer_secret")
-oauth_callback = "http://127.0.0.1:8888/getapikey"
+oauth_callback = "http://127.0.0.1:8080/followersearch"
 twitter_auth = TwitterAuth(consumer_key, consumer_secret, oauth_callback)
 
 @app.route("/oauth")
 def oauth_app():
-    twitter_auth.oauth()
+    twitter_auth = TwitterAuth(consumer_key, consumer_secret, oauth_callback)
     redirect_url = twitter_auth.get_authorization_url()
     print(redirect_url)
     return redirect(redirect_url)
@@ -61,11 +60,10 @@ def get_api_key():
     twitter_auth.set_access_token(verifier)
     return redirect("http://127.0.0.1:8080/followersearch")
 
-
-
 @app.route("/followerdata")
 def get_follower():
-    user_name = request.args.get('user_name')
+    user_name = request.values.get('user_name')
+    twitter_auth.set_access_token(get_verifier(user_name))
     api = twitter_auth.get_API(wait_on_rate_limit = True)
     followers_ids = tweepy.Cursor(api.followers_ids, screen_name = user_name, cursor = -1).items()
     followers_ids_list = []
