@@ -3,13 +3,14 @@ import Router from 'vue-router'
 import Login from './components/Login.vue'
 import TweetSearch from './components/tweetSearch.vue'
 import FollowerSearch from './components/followerSearch.vue'
-import Result from './components/Result.vue'
+import GetAPIKey from './components/GetAPIKey.vue'
 
 
 Vue.use(Router)
 
 export default new Router({
   mode: 'history',
+  base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
@@ -27,12 +28,9 @@ export default new Router({
       component: FollowerSearch
     },
     {
-      path: '/result',
-      name: 'result',
-      component: Result,
-      props: {
-        hoge: ""
-      }
+      path: '/getapikey',
+      name: 'getapikey',
+      component: GetAPIKey
     }
   ]
 })

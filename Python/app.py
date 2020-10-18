@@ -1,4 +1,4 @@
-from flask import Flask,redirect, request, jsonify, render_template
+from flask import Flask,redirect, escape, request, jsonify, render_template, session
 from flask_cors import CORS
 import tweepy
 import ast
@@ -7,22 +7,8 @@ from queue import Queue
 import threading
 import sqlite3
 
-class TwitterAuth():
-    def __init__(self, ck: str, cs: str, oc: str):
-        self.consumer_key = ck
-        self.consumer_secret = cs
-        self.oauth_callback = oc
-        self.auth = tweepy.OAuthHandler(self.consumer_key, self.consumer_secret, self.oauth_callback)
-    def get_authorization_url(self) -> str:
-        redirect_url = self.auth.get_authorization_url()
-        return redirect_url
-    def set_access_token(self, verifier: str):
-        self.auth.get_access_token(verifier)
-        key = self.auth.access_token
-        secret = self.auth.access_token_secret
-        self.auth.set_access_token(key, secret)
-    def get_API(self, wait_on_rate_limit = False) -> tweepy.API:
-        return tweepy.API(self.auth)
+from twitter_oauth import TwitterOAuth
+
 
 
 def get_tweet_worker(i, api, followers_data_list, followers_ids_list, queue):
@@ -39,32 +25,35 @@ def get_tweet_worker(i, api, followers_data_list, followers_ids_list, queue):
     
     #print(followers_data_list)
 app = Flask(__name__,
-            static_folder = "./dist/static",
-            template_folder = "./dist")
+            static_folder = "../Vue/dist/static",
+            template_folder = "../Vue/dist")
+
+app.secret_key = os.urandom(12)
 CORS(app)
 consumer_key = os.getenv("consumer_key")
 consumer_secret = os.getenv("consumer_secret")
-oauth_callback = "http://127.0.0.1:8080/followersearch"
-twitter_auth = TwitterAuth(consumer_key, consumer_secret, oauth_callback)
-
+oauth_callback = "http://127.0.0.1:8080/getapikey"
+tw_oauth = TwitterOAuth(consumer_key, consumer_secret, oauth_callback)
 @app.route("/oauth")
 def oauth_app():
-    twitter_auth = TwitterAuth(consumer_key, consumer_secret, oauth_callback)
-    redirect_url = twitter_auth.get_authorization_url()
+    tw_oauth.oauth()
+    redirect_url = tw_oauth.get_authorization_url()
     print(redirect_url)
     return redirect(redirect_url)
 
 @app.route("/getapikey")
-def get_api_key():
+def get_apikey():
     verifier = request.values.get('oauth_verifier')
-    twitter_auth.set_access_token(verifier)
-    return redirect("http://127.0.0.1:8080/followersearch")
+    tw_oauth.set_access_token(verifier)
+    #return jsonify({"tw_data": "hoge"})
 
 @app.route("/followerdata")
 def get_follower():
     user_name = request.values.get('user_name')
-    twitter_auth.set_access_token(get_verifier(user_name))
-    api = twitter_auth.get_API(wait_on_rate_limit = True)
+    verifier = request.values.get('oauth_verifier')
+    tw_oauth.oauth()
+    tw_oauth.search_set_access_token(verifier)
+    api = tw_oauth.get_API(wait_on_rate_limit = True)
     followers_ids = tweepy.Cursor(api.followers_ids, screen_name = user_name, cursor = -1).items()
     followers_ids_list = []
     followers_data_list = []
@@ -94,7 +83,7 @@ def get_follower():
 
 @app.route("/tweetdata")
 def get_tweet():
-    api = twitter_auth.get_API(wait_on_rate_limit=True)
+    api = tw_oauth.get_API(wait_on_rate_limit=True)
     user_name = request.args.get('user_name')
     if request.args.get('tweet_count'):
         tweet_count = int(request.args.get('tweet_count'))
@@ -123,8 +112,10 @@ def get_tweet():
 
 
     return jsonify({"tw_data": tweet_list})
-
-def index():
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def index(path):
     return render_template("index.html")
+
 if __name__ == "__main__":
     app.run(debug=True, host='127.0.0.1', port=8888)

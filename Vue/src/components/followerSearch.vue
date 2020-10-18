@@ -2,6 +2,8 @@
   <div>
     <Header></Header>
     <b-container>
+       <p><b-button variant="primary" onclick="location.href='http://127.0.0.1:8888/oauth'">ログインして始める</b-button></p>
+
       <b-form-group label="アカウント名" description="TwitterIDを入力してください">
         <b-form-input v-model="user_name" placeholder="@"></b-form-input>
       </b-form-group>
@@ -17,6 +19,7 @@
       </p>
       -->
       <p>
+        {{query}}
         <b-button variant="primary" @click="getUserData(user_name)">フォロワー取得</b-button>
       </p>
       <div id="loading" v-if="loading">
@@ -71,6 +74,7 @@ export default {
       twData: Object,
       loading: false,
       loaded: false,
+      query : "",
       selectedDisplayFormat: String,
       options: [
         {value: 'デフォルト', text: 'デフォルト' },
@@ -81,12 +85,19 @@ export default {
       ]
     }
   },
+   mounted() {
+     console.log("hoge")
+    if (localStorage.key) {
+      this.query = sessionStorage.getItem("key");
+    }
+  },
   methods: {
     getUserData(){
       this.loading = true
       this.axios.get("http://127.0.0.1:8888/followerdata", {
         params: {
-          user_name: this.user_name
+          user_name: this.user_name,
+          oauth_verifier: this.query
         }
       })
       .then((response) =>{
@@ -102,6 +113,7 @@ export default {
       });
     },
     sortData(){
+      
       if (this.selectedDisplayFormat == "フォロー数が多い順") {
         this.twData.sort(function(a, b) {
           return b.friends - a.friends

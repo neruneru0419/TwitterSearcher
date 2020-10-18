@@ -7,7 +7,6 @@
       <b-navbar-nav>
         <b-nav-item active to="/followersearch">フォロワー検索 </b-nav-item>
         <b-nav-item active to="/tweetsearch">ツイート検索</b-nav-item>
-         <p><b-button variant="primary" onclick="location.href='http://127.0.0.1:8888/oauth'">ログインして始める</b-button></p>
         
       </b-navbar-nav>
 
