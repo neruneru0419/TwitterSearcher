@@ -8,8 +8,8 @@ class AccountData():
         c = conn.cursor()
         c.execute('''CREATE TABLE users(verifier text, token text, secret_token text)''')
         conn.commit()
-        conn.close()
         """
+        conn.close()
     def insert_verifier(self, verifier: str, token: str, secret_token: str):
         conn = sqlite3.connect(self.dbname)
         c = conn.cursor()
@@ -19,7 +19,7 @@ class AccountData():
             data = (verifier, token)
             c.execute(sql, data)
         else:
-            sql = ("INSERT INTO users VALUES (?, ?, ?)")
+            sql = ("insert into users values (?, ?, ?)")
             data = (verifier, token, secret_token)
             c.execute(sql, data)
         conn.commit()

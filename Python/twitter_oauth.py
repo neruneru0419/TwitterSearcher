@@ -1,6 +1,5 @@
 import tweepy
 from account_data import AccountData
-import os
 
 class TwitterOAuth():
     def __init__(self, ck: str, cs: str, oc: str):

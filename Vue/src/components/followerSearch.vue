@@ -2,7 +2,6 @@
   <div>
     <Header></Header>
     <b-container>
-       <p><b-button variant="primary" onclick="location.href='http://127.0.0.1:8888/oauth'">ログインして始める</b-button></p>
 
       <b-form-group label="アカウント名" description="TwitterIDを入力してください">
         <b-form-input v-model="user_name" placeholder="@"></b-form-input>
@@ -10,16 +9,7 @@
       <b-form-group label="カウント数" description="フォロワーを何人取得するか入力してください">
         <b-form-input v-model="followerCount" placeholder=""></b-form-input>
       </b-form-group>
-      <!--<p>
-        相互フォロー
-
-        <router-link to="/result">
-        <b-button variant="primary">grfd</b-button>
-        </router-link>
-      </p>
-      -->
       <p>
-        {{query}}
         <b-button variant="primary" @click="getUserData(user_name)">フォロワー取得</b-button>
       </p>
       <div id="loading" v-if="loading">
@@ -35,18 +25,22 @@
           <p>アカウントが見つかりませんでした</p>
         </b-alert>
       </div>
+      <Result></Result>
       <div id="twData" class="w-100" v-if="loaded">
         <div id="accounts">
           <div v-for="i in twData" :key="i.id">
+            <b-card>
             <img :src="i.user_icon" />
             <a :href="url + i.screen_name">
               {{i.user_name}}
             </a>
-            <p>ツイート数{{i.status}} フォロー数{{i.friends}} フォロワー数{{i.follower}}</p>
+            <b-card-text>
+              ツイート数{{i.status}} フォロー数{{i.friends}} フォロワー数{{i.follower}}
+            </b-card-text>
+            </b-card>
           </div>
         </div>
       </div>
-      <p v-if="loaded">Tweet Searcher</p>
       <b-form-group label="表示順" description="検索結果の表示方法を選択してください">
         <b-form-select v-model="selectedDisplayFormat" :options="options"></b-form-select>
       </b-form-group>
@@ -59,9 +53,11 @@
 
 <script>
 import Header from "./Header"
+import Result from "./Result"
 export default {
   components: {
-    Header
+    Header,
+    Result
   },
   name: 'followerSearch',
   data(){
@@ -136,19 +132,19 @@ export default {
       }
     }
   }
-  //ツイート数でソート
+  //ツイート数でソート1
 }
 </script>
 
 <style>
-#twData {
+/* #twData {
   text-align: left;
   overflow: auto;
-  height: 300px;
-},
+  height: 500px;
+}
 #loading{
   width: 10%;
   margin: 0 auto;
   max-width: 500px;
-}
+} */
 </style>

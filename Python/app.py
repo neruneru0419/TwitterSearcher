@@ -1,17 +1,16 @@
-from flask import Flask,redirect, escape, request, jsonify, render_template, session
+from flask import Flask,redirect, request, jsonify, render_template
 from flask_cors import CORS
 import tweepy
 import ast
 import os
 from queue import Queue
 import threading
-import sqlite3
 
 from twitter_oauth import TwitterOAuth
 
 
 
-def get_tweet_worker(i, api, followers_data_list, followers_ids_list, queue):
+def get_userdata_worker(i, api, followers_data_list, followers_ids_list, queue):
     print("start")
     for i in api.lookup_users(user_ids=followers_ids_list[i:i+100]):
         followers_data_list.append({"user_name": i.name,
@@ -53,18 +52,20 @@ def get_follower():
     verifier = request.values.get('oauth_verifier')
     tw_oauth.oauth()
     tw_oauth.search_set_access_token(verifier)
+
     api = tw_oauth.get_API(wait_on_rate_limit = True)
     followers_ids = tweepy.Cursor(api.followers_ids, screen_name = user_name, cursor = -1).items()
     followers_ids_list = []
     followers_data_list = []
     tw_error = {}
     queue = Queue()
+
     try:
         for followers_id in followers_ids:
             followers_ids_list.append(followers_id)
         for i in range(0, len(followers_ids_list), 100):
             queue.put(i)
-            thread = threading.Thread(target=get_tweet_worker, 
+            thread = threading.Thread(target=get_userdata_worker, 
                                             args=(i,api,followers_data_list,followers_ids_list, queue))
             thread.start()
         while True:
@@ -79,12 +80,16 @@ def get_follower():
     if tw_error:
         return jsonify({"tw_data": tw_error})
     else:
-        return jsonify({"tw_data": followers_data_list})
+        return jsonify({"tw_data": followers_data_list[0:100]})
 
 @app.route("/tweetdata")
 def get_tweet():
+    user_name = request.values.get('user_name')
+    verifier = request.values.get('oauth_verifier')
+    tw_oauth.oauth()
+    tw_oauth.search_set_access_token(verifier)
+
     api = tw_oauth.get_API(wait_on_rate_limit=True)
-    user_name = request.args.get('user_name')
     if request.args.get('tweet_count'):
         tweet_count = int(request.args.get('tweet_count'))
     else:
@@ -103,8 +108,9 @@ def get_tweet():
     try:
         for followers_tweet in followers_timeline:
             if (not search_word) or (search_word in followers_tweet.text):
-                tweet_list.append({"tweet": followers_tweet.text})
-            #print(len(tweet_list))
+                tweet_list.append({"tweet": followers_tweet.text,
+                                   "retweet_count": followers_tweet.retweet_count,
+                                   "favorite_count": followers_tweet.favorite_count})
             if len(tweet_list) == tweet_count:
                 break
     except tweepy.error.TweepError as e:

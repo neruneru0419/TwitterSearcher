@@ -26,7 +26,15 @@
       <div id="twData" class="w-100" v-if="loaded">
         <div id="accounts">
           <div v-for="i in twData" :key="i.id">
-              {{i.tweet}}
+              <b-card>
+                <b-card-text>
+                  {{i.tweet}}
+                  <p>
+                    リツイート数{{i.retweet_count}}
+                    いいね数{{i.favorite_count}}
+                  </p>
+                </b-card-text>
+              </b-card>
           </div>
         </div>
       </div>
@@ -50,6 +58,7 @@ export default {
       user_name: '',
       url: "http://twitter.com/",
       twData: "",
+      query: "",
       tweetCount: 200,
       searchWord: "",
       loading: false,
@@ -63,32 +72,20 @@ export default {
       ]
     }
   },
+  mounted() {
+    if (localStorage.key) {
+      this.query = sessionStorage.getItem("key");
+    }
+  },
   methods: {
-    getUserData(){
-      this.loading = true
-      this.axios.get("http://127.0.0.1:8888/tweetdata", {
-        params: {
-          user_name: this.user_name,
-          tweet_count: this.tweetCount
-        }
-      })
-      .then((response) =>{
-        console.log(response.data.tw_data[0])
-        this.twData = response.data.tw_data
-        this.loading = false
-        this.loaded = true
-      })
-      .catch((e) => {
-        console.log(e)
-      });
-    },
     getTweetData(){
       this.loading = true
       this.axios.get("http://127.0.0.1:8888/tweetdata", {
         params: {
           user_name: this.user_name,
           tweet_count: this.tweetCount,
-          search_word: this.searchWord
+          search_word: this.searchWord,
+          oauth_verifier: this.query
         }
       })
       .then((response) =>{

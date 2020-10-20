@@ -1,6 +1,10 @@
 <template>
   <b-container>
-    <myheader></myheader>
+    <div>
+      <h1>
+        Tweet Searcher
+      </h1>
+    </div>
     <p>アプリの説明ほげほげ</p>
     <!--ここのボタンTwitterのアイコンにしたい-->
     <p><b-button variant="primary" onclick="location.href='http://127.0.0.1:8888/oauth'">ログインせず始める</b-button></p>
@@ -8,12 +12,8 @@
 </template>
 
 <script>
-import myheader from './myheader'
 
 export default {
-    components: {
-        myheader
-    },
   name: "Login",
   data(){
     return {
@@ -62,8 +62,10 @@ export default {
 </script>
 
 <style>
-
-#app {
-  text-align: center;
-}
+  #app {
+    text-align: center;
+  }
+  h1{
+    margin: 0 auto;
+  }
 </style>
