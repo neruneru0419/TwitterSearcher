@@ -5,7 +5,7 @@
         <div v-for="i in twData.slice((currentPage*perPage) - perPage, currentPage*perPage)" :key="i.id">
           <b-card>
             <img :src="i.user_icon" />
-            <a :href="url + i.screen_name">
+            <a :href="'http://twitter.com/' + i.screen_name">
               {{i.user_name}}
             </a>
             <b-card-text>

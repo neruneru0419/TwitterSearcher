@@ -17,7 +17,8 @@ def get_userdata_worker(i, api, followers_data_list, followers_ids_list, queue):
                                     "user_icon": i.profile_image_url_https,
                                     "status": i.statuses_count,
                                     "follower": i.followers_count,
-                                    "friends": i.friends_count})
+                                    "friends": i.friends_count,
+                                    "screen_name": i.screen_name})
     queue.get()
     queue.task_done()
     print("end")
@@ -115,9 +116,8 @@ def get_tweet():
                 break
     except tweepy.error.TweepError as e:
         print (e.reason)
-
-
     return jsonify({"tw_data": tweet_list})
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def index(path):
