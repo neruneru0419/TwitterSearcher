@@ -1,48 +1,43 @@
 <template>
-  <div id="app">
-    <ul>
-      <li v-for="(item, key) in getItems" :key="key">{{item}}</li>
-    </ul>
-    <paginate
-    :page-count="getPageCount"
-    :page-range="3"
-    :margin-pages="2"
-    :click-handler="clickCallback"
-    :prev-text="'＜'"
-    :next-text="'＞'"
-    :container-class="'pagination'"
-    :page-class="'page-item'">
-  </paginate>
-</div>
+  <div class="overflow-auto" v-if="loaded">
+    <div id="twData" class="w-100" :per-page="perPage" :current-page="currentPage">
+      <div id="accounts">
+        <div v-for="i in twData.slice((currentPage*perPage) - perPage, currentPage*perPage)" :key="i.id">
+          <b-card>
+            <img :src="i.user_icon" />
+            <a :href="url + i.screen_name">
+              {{i.user_name}}
+            </a>
+            <b-card-text>
+              ツイート数{{i.status}} フォロー数{{i.friends}} フォロワー数{{i.follower}}
+            </b-card-text>
+          </b-card>
+        </div>
+      </div>
+    </div>
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="rows"
+      :per-page="perPage"
+      aria-controls="twData"
+      limit=10
+    ></b-pagination>
+  </div>
 </template>
 
 <script>
-
-
-export default {
-   el: '#app',
-   data(){
-     return {
-      items: ["hoge", "huga", "hoge","hoge", "huga", "hoge","hoge", "huga", "hoge","hoge", "huga", "hoge","hoge", "huga", "hoge","hoge", "huga", "hoge","hoge", "huga", "hoge","hoge", "huga", "hoge","hoge", "huga", "hoge","hoge", "huga", "hoge","hoge", "huga", "hoge","hoge", "huga", "hoge","hoge", "huga", "hoge","hoge", "huga", "hoge"],
-      parPage: 10,
-      currentPage: 1
+  export default {
+    props: ["twData", "loaded"],
+    data() {
+      return {
+        perPage: 20,
+        currentPage: 1
       }
-   },
-   methods: {
-    clickCallback: function (pageNum) {
-       this.currentPage = Number(pageNum);
+    },
+    computed: {
+      rows() {
+        return this.twData.length
+      }
     }
-   },
-   computed: {
-     getItems: function() {
-      let current = this.currentPage * this.parPage;
-      let start = current - this.parPage;
-      return this.items.slice(start, current);
-     },
-     getPageCount: function() {
-      return Math.ceil(this.items.length / this.parPage);
-     }
-   }
-
- }
+  }
 </script>

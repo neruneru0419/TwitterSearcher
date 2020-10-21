@@ -1,5 +1,5 @@
 {
-  "name": "twitter",
+  "name": "twitt",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -19,6 +19,7 @@
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-axios": "^2.1.5",
+    "vue-paginate": "^3.6.0",
     "vue-router": "^3.4.3",
     "vue-session": "^1.0.0",
     "vuejs-paginate": "^2.1.0",

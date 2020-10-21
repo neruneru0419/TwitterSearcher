@@ -25,27 +25,12 @@
           <p>アカウントが見つかりませんでした</p>
         </b-alert>
       </div>
-      <Result></Result>
-      <div id="twData" class="w-100" v-if="loaded">
-        <div id="accounts">
-          <div v-for="i in twData" :key="i.id">
-            <b-card>
-            <img :src="i.user_icon" />
-            <a :href="url + i.screen_name">
-              {{i.user_name}}
-            </a>
-            <b-card-text>
-              ツイート数{{i.status}} フォロー数{{i.friends}} フォロワー数{{i.follower}}
-            </b-card-text>
-            </b-card>
-          </div>
-        </div>
-      </div>
+      <Result :twData="twData" :loaded="loaded"></Result>
       <b-form-group label="表示順" description="検索結果の表示方法を選択してください">
         <b-form-select v-model="selectedDisplayFormat" :options="options"></b-form-select>
       </b-form-group>
       <p>
-        <b-button variant="primary" @click="sortData(user_name)">ソート</b-button>
+        <b-button variant="primary" @click="sortData(user_name)">並び替え</b-button>
       </p>
     </b-container>
   </div>
@@ -70,7 +55,7 @@ export default {
       twData: Object,
       loading: false,
       loaded: false,
-      query : "",
+      verifier : "",
       selectedDisplayFormat: String,
       options: [
         {value: 'デフォルト', text: 'デフォルト' },
@@ -84,7 +69,7 @@ export default {
    mounted() {
      console.log("hoge")
     if (localStorage.key) {
-      this.query = sessionStorage.getItem("key");
+      this.verifier = sessionStorage.getItem("key");
     }
   },
   methods: {
@@ -93,7 +78,7 @@ export default {
       this.axios.get("http://127.0.0.1:8888/followerdata", {
         params: {
           user_name: this.user_name,
-          oauth_verifier: this.query
+          oauth_verifier: this.verifier
         }
       })
       .then((response) =>{

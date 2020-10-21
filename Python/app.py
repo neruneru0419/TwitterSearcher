@@ -44,7 +44,6 @@ def oauth_app():
 def get_apikey():
     verifier = request.values.get('oauth_verifier')
     tw_oauth.set_access_token(verifier)
-    #return jsonify({"tw_data": "hoge"})
 
 @app.route("/followerdata")
 def get_follower():
@@ -80,7 +79,7 @@ def get_follower():
     if tw_error:
         return jsonify({"tw_data": tw_error})
     else:
-        return jsonify({"tw_data": followers_data_list[0:100]})
+        return jsonify({"tw_data": followers_data_list})
 
 @app.route("/tweetdata")
 def get_tweet():
