@@ -29,7 +29,7 @@ app = Flask(__name__,
 
 app.secret_key = os.urandom(12)
 CORS(app)
-consumer_key = os.getenv("1")
+consumer_key = os.getenv("consumer_key")
 consumer_secret = os.getenv("consumer_secret")
 oauth_callback = "https://neruneru-twirrer-searcher.herokuapp.com/getapikey"
 tw_oauth = TwitterOAuth(consumer_key, consumer_secret, oauth_callback)
