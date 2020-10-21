@@ -81,8 +81,6 @@ export default {
         }
       })
       .then((response) =>{
-        console.log(response.data.tw_data[0])
-        console.log(response.data.tw_data[0].code)
         this.twData = response.data.tw_data
         this.loading = false
         this.loaded = true

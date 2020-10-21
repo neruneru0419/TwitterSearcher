@@ -1,6 +1,6 @@
 <template>
   <div>
-  <b-navbar toggleable="lg" type="dark" variant="info" class=shadow >
+  <b-navbar toggleable="sm" type="dark" variant="info" class=shadow >
     <b-navbar-brand href="/">Tweet Searcher</b-navbar-brand>
 
     <b-collapse id="nav-collapse" is-nav>
