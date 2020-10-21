@@ -80,7 +80,7 @@ export default {
   methods: {
     getTweetData(){
       this.loading = true
-      this.axios.get("http://127.0.0.1:8888/tweetdata", {
+      this.axios.get("/tweetdata", {
         params: {
           user_name: this.user_name,
           tweet_count: this.tweetCount,

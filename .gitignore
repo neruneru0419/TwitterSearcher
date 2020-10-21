@@ -129,3 +129,6 @@ dmypy.json
 
 #database
 .db
+
+#node
+node_modules

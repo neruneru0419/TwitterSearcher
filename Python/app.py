@@ -31,7 +31,7 @@ app.secret_key = os.urandom(12)
 CORS(app)
 consumer_key = os.getenv("consumer_key")
 consumer_secret = os.getenv("consumer_secret")
-oauth_callback = "http://127.0.0.1:8080/getapikey"
+oauth_callback = "https://neruneru-twirrer-searcher.herokuapp.com/getapikey"
 tw_oauth = TwitterOAuth(consumer_key, consumer_secret, oauth_callback)
 @app.route("/oauth")
 def oauth_app():
@@ -40,16 +40,16 @@ def oauth_app():
     print(redirect_url)
     return redirect(redirect_url)
 
-@app.route("/getapikey")
-def get_apikey():
+@app.route("/setapikey")
+def set_apikey():
     verifier = request.values.get('oauth_verifier')
     tw_oauth.set_access_token(verifier)
-    #return jsonify({"tw_data": "hoge"})
 
 @app.route("/followerdata")
 def get_follower():
     user_name = request.values.get('user_name')
     verifier = request.values.get('oauth_verifier')
+    print(verifier)
     tw_oauth.oauth()
     tw_oauth.search_set_access_token(verifier)
 

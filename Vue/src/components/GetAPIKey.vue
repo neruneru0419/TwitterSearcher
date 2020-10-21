@@ -4,7 +4,7 @@ export default {
   created : function(){
     sessionStorage.setItem('key', this.$route.query.oauth_verifier)
     console.log('created')
-    this.axios.get("http://127.0.0.1:8888/getapikey", {
+    this.axios.get("/setapikey", {
         params: {
           oauth_verifier: this.$route.query.oauth_verifier
         }
@@ -12,7 +12,7 @@ export default {
       .catch((e) => {
         console.log(e)
       });
-    location.href='http://127.0.0.1:8080/followersearch'
+    location.href='/followersearch'
   }
 }
 </script>
