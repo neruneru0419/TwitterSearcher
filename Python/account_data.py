@@ -4,11 +4,9 @@ class AccountData():
     def __init__(self, dbname: str):
         self.dbname = dbname
         conn = sqlite3.connect(self.dbname)
-        """
         c = conn.cursor()
-        c.execute('''CREATE TABLE users(verifier text, token text, secret_token text)''')
+        c.execute('''CREATE TABLE if not exists users(verifier text, token text, secret_token text)''')
         conn.commit()
-        """
         conn.close()
     def insert_verifier(self, verifier: str, token: str, secret_token: str):
         conn = sqlite3.connect(self.dbname)
