@@ -7,7 +7,7 @@ class TwitterOAuth():
         self.consumer_secret = cs
         self.oauth_callback = oc
         self.auth = ""
-        self.account_data = AccountData("Python/tw.db")
+        self.account_data = AccountData("/tmp/tw.db")
     def oauth(self):
         self.auth = tweepy.OAuthHandler(self.consumer_key, self.consumer_secret, self.oauth_callback)
     def get_authorization_url(self) -> str:
