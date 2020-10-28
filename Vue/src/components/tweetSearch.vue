@@ -1,6 +1,8 @@
 <template>
-  <div>
+  <div class="tweetSearch">
     <Header></Header>
+    <h2 class="my-3">ツイート検索</h2>
+    <div>検索したいワードを入力すると</div>
     <b-container>
       <b-form-group label="アカウント名" description="TwitterIDを入力してください">
         <b-form-input v-model="user_name" placeholder="@"></b-form-input>
@@ -42,7 +44,7 @@
         <b-form-select v-model="selectedDisplayFormat" :options="options"></b-form-select>
       </b-form-group>
       
-    </b-container>
+    </b-container> 
   </div>
 </template>
 

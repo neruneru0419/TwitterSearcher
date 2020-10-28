@@ -12,7 +12,6 @@ export default {
       .catch((e) => {
         console.log(e)
       });
-    location.href='/followersearch'
   }
 }
 </script>

@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="followerSearch">
     <Header></Header>
+    <h2 class="my-3">フォロワー検索</h2>
     <b-container>
-
       <b-form-group label="アカウント名" description="TwitterIDを入力してください">
         <b-form-input v-model="user_name" placeholder="@"></b-form-input>
       </b-form-group>
@@ -20,7 +20,7 @@
           </div>
         </b-alert>
       </div>
-      <div id="errorScreen" v-if="errorCode == 34">
+      <div id="errorScreen" v-if="user_name == '' && !loading">
         <b-alert variant="danger" show>
           <p>アカウントが見つかりませんでした</p>
         </b-alert>
