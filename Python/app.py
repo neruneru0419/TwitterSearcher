@@ -32,8 +32,8 @@ app.secret_key = os.urandom(12)
 CORS(app)
 consumer_key = os.getenv("consumer_key")
 consumer_secret = os.getenv("consumer_secret")
-oauth_callback = "http://twittersearcher.neruneru0419.com/getapikey"
-#oauth_callback = "http://127.0.0.1:8888/getapikey"
+#oauth_callback = "http://twittersearcher.neruneru0419.com/getapikey"
+oauth_callback = "http://127.0.0.1:8888/getapikey"
 tw_oauth = TwitterOAuth(consumer_key, consumer_secret, oauth_callback)
 @app.route("/oauth")
 def oauth_app():
@@ -47,7 +47,7 @@ def set_apikey():
     verifier = request.values.get('oauth_verifier')
     tw_oauth.set_access_token(verifier)
     
-    return redirect("http://127.0.0.1:8888/followersearch")
+    return redirect("/followersearch")
 
 @app.route("/followerdata")
 def get_follower():
@@ -61,7 +61,6 @@ def get_follower():
     followers_ids = tweepy.Cursor(api.followers_ids, screen_name = user_name, cursor = -1).items()
     followers_ids_list = []
     followers_data_list = []
-    tw_error = {}
     queue = Queue()
 
     try:
@@ -76,15 +75,12 @@ def get_follower():
             if queue.empty():
                 break
         print(len(followers_data_list))
+        statuscode = 200
     except tweepy.error.TweepError as e:
-        print (type(e.reason))
-        tw_error = ast.literal_eval(e.reason)
-        print(tw_error)
-        print(type(tw_error))
-    if tw_error:
-        return jsonify({"tw_data": tw_error})
-    else:
-        return jsonify({"tw_data": followers_data_list})
+        print(e)
+        followers_data_list = []
+        statuscode = 404
+    return jsonify({"tw_data": followers_data_list}), statuscode
 
 @app.route("/tweetdata")
 def get_tweet():

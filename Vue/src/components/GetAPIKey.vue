@@ -9,8 +9,11 @@ export default {
           oauth_verifier: this.$route.query.oauth_verifier
         }
       })
+      .then(() =>{
+        location.href='http://127.0.0.1:8888/followersearch'
+      })
       .catch((e) => {
-        console.log(e)
+        console.log(e.response)
       });
   }
 }

@@ -1,5 +1,6 @@
 <template>
-  <div class="overflow-auto" v-if="loaded">
+  
+  <div class="overflow-auto" v-if="loaded && statusCode==200">
     <div id="twData" class="w-100" :per-page="perPage" :current-page="currentPage">
       <div id="accounts">
         <div v-for="i in twData.slice((currentPage*perPage) - perPage, currentPage*perPage)" :key="i.id">
@@ -27,7 +28,7 @@
 
 <script>
   export default {
-    props: ["twData", "loaded"],
+    props: ["twData", "loaded", "statusCode"],
     data() {
       return {
         perPage: 20,

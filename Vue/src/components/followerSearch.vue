@@ -20,12 +20,12 @@
           </div>
         </b-alert>
       </div>
-      <div id="errorScreen" v-if="user_name == '' && !loading">
+      <div id="errorScreen" v-if="loaded && statusCode==404">
         <b-alert variant="danger" show>
           <p>アカウントが見つかりませんでした</p>
         </b-alert>
       </div>
-      <Result :twData="twData" :loaded="loaded"></Result>
+      <Result :twData="twData" :loaded="loaded" :statusCode="statusCode"></Result>
       <b-form-group label="表示順" description="検索結果の表示方法を選択してください">
         <b-form-select v-model="selectedDisplayFormat" :options="options"></b-form-select>
       </b-form-group>
@@ -47,7 +47,7 @@ export default {
   name: 'followerSearch',
   data(){
     return {
-      errorCode: Number,
+      statusCode: Number,
       followerCount: null,
       user_name: '',
       url: "http://twitter.com/",
@@ -84,10 +84,13 @@ export default {
         this.twData = response.data.tw_data
         this.loading = false
         this.loaded = true
-        this.errorCode = response.data.tw_data[0].code
+        this.statusCode = response.status
       })
       .catch((e) => {
-        console.log(e)
+        console.log(e.response)
+        this.loading = false
+        this.loaded = true
+        this.statusCode = e.response.status
       });
     },
     sortData(){
@@ -114,19 +117,6 @@ export default {
       }
     }
   }
-  //ツイート数でソート1
 }
 </script>
 
-<style>
-/* #twData {
-  text-align: left;
-  overflow: auto;
-  height: 500px;
-}
-#loading{
-  width: 10%;
-  margin: 0 auto;
-  max-width: 500px;
-} */
-</style>
