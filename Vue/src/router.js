@@ -5,6 +5,7 @@ import Result from './components/Result.vue'
 import TweetSearch from './components/tweetSearch.vue'
 import FollowerSearch from './components/followerSearch.vue'
 import GetAPIKey from './components/GetAPIKey.vue'
+import NotFound from './components/NotFound.vue'
 
 
 Vue.use(Router)
@@ -36,6 +37,11 @@ export default new Router({
     {
       path: '/result',
       component: Result
+    },
+    {
+      path : '*',
+      component: NotFound
     }
+
   ]
 })
