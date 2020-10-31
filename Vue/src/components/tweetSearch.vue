@@ -118,7 +118,8 @@ export default {
 </script>
 
 <style>
-#twData {
+
+/* #twData {
   text-align: left;
   overflow: auto;
   height: 600px;
@@ -128,5 +129,5 @@ export default {
   width: 10%;
   margin: 0 auto;
   max-width: 500px;
-}
+} */
 </style>

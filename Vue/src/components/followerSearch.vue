@@ -22,7 +22,16 @@
       </div>
       <div id="errorScreen" v-if="loaded && statusCode==404">
         <b-alert variant="danger" show>
-          <p>アカウントが見つかりませんでした</p>
+          <p>アカウントが見つかりませんでした。</p>
+        </b-alert>
+      </div>
+      <div id="errorScreen" v-if="loaded && statusCode==88">
+        <b-alert variant="danger" show>
+          <p>API制限です。時間を開けてもう一度お試しください。</p>
+        </b-alert>
+      </div><div id="errorScreen" v-if="loaded && statusCode==500">
+        <b-alert variant="danger" show>
+          <p>エラーが発生しました。</p>
         </b-alert>
       </div>
       <Result :twData="twData" :loaded="loaded" :statusCode="statusCode"></Result>
@@ -96,6 +105,7 @@ export default {
     sortData(){
       
       if (this.selectedDisplayFormat == "フォロー数が多い順") {
+        scrollTo(0, 0);
         this.twData.sort(function(a, b) {
           return b.friends - a.friends
         })

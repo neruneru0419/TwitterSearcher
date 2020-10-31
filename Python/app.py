@@ -56,7 +56,7 @@ def get_follower():
     print(verifier)
     tw_oauth.oauth()
     tw_oauth.search_set_access_token(verifier)
-
+    statuscode = 200
     api = tw_oauth.get_API(wait_on_rate_limit = True)
     followers_ids = tweepy.Cursor(api.followers_ids, screen_name = user_name, cursor = -1).items()
     followers_ids_list = []
@@ -66,6 +66,7 @@ def get_follower():
     try:
         for followers_id in followers_ids:
             followers_ids_list.append(followers_id)
+            
         for i in range(0, len(followers_ids_list), 100):
             queue.put(i)
             thread = threading.Thread(target=get_userdata_worker, 
@@ -77,9 +78,13 @@ def get_follower():
         print(len(followers_data_list))
         statuscode = 200
     except tweepy.error.TweepError as e:
-        print(e)
+        print(e.reason)
         followers_data_list = []
-        statuscode = 404
+        code = ast.literal_eval(e.reason)[0]["code"]
+        if code == 34:
+            statuscode = 404
+        elif code == 88:
+            statuscode = 88
     return jsonify({"tw_data": followers_data_list}), statuscode
 
 @app.route("/tweetdata")
