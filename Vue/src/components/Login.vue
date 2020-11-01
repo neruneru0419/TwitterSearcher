@@ -1,18 +1,22 @@
 <template>
-  <b-container>
-    <div>
-      <h1>
-        Tweet Searcher
-      </h1>
-    </div>
-    <p>フォロワーだったりツイートの検索ツール</p>
-    <p><b-button variant="primary" onclick="location.href='/oauth'">ログインして始める</b-button></p>
-  </b-container>
+  <div class="Login">
+    <Header></Header>
+    <b-container>
+        <h1>
+          Tweet Searcher
+        </h1>
+      <p>フォロワーだったりツイートの検索ツール</p>
+      <p><b-button variant="primary" onclick="location.href='/oauth'">ログインして始める</b-button></p>
+    </b-container> 
+  </div>
 </template>
 
 <script>
-
+import Header from "./Header"
 export default {
+  components: {
+    Header
+  },
   name: "Login",
   data(){
     return {

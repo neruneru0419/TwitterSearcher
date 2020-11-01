@@ -2,7 +2,6 @@
   <div class="tweetSearch">
     <Header></Header>
     <h2 class="my-3">ツイート検索</h2>
-    <div>検索したいワードを入力すると</div>
     <b-container>
       <b-form-group label="アカウント名" description="TwitterIDを入力してください">
         <b-form-input v-model="user_name" placeholder="@"></b-form-input>
@@ -16,19 +15,19 @@
       <p>
         <b-button variant="primary" @click="getTweetData(user_name)">ツイート取得</b-button>
       </p>
+      <Loading :loading="loading" :statusCode="statusCode"></Loading>
 
-      <div id="loading" v-if="loading">
-        <b-alert variant="primary" show>
-          <p>loading...</p>
-          <div class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-          </div>
-        </b-alert>
-      </div>
-      <div id="twData" class="w-100" v-if="loaded">
-        <div id="accounts">
-          <div v-for="i in twData" :key="i.id">
+      <div v-if="!loading && statusCode==200">
+        <div id="twData" class="w-100" :per-page="perPage" :current-page="currentPage" style="height:600px; overflow-y:scroll; text-align: left;">
+          <div v-for="i in twData.slice((currentPage*perPage) - perPage, currentPage*perPage)" :key="i.id">
               <b-card>
+                <a :href="'http://twitter.com/' + i.screen_name">
+                    <img :src="i.user_icon" />
+                </a>
+                {{i.user_name}}
+                <a :href="'http://twitter.com/' + i.screen_name">
+                    @{{i.screen_name}}
+                </a>
                 <b-card-text>
                   {{i.tweet}}
                   <p>
@@ -39,6 +38,14 @@
               </b-card>
           </div>
         </div>
+        <b-pagination
+            v-model="currentPage"
+            onclick="document.getElementById('twData').scrollTo(100, 0);"
+            :total-rows="rows"
+            :per-page="perPage"
+            aria-controls="twData"
+            limit=10
+        ></b-pagination>
       </div>
       <b-form-group label="表示順" description="検索結果の表示方法を選択してください">
         <b-form-select v-model="selectedDisplayFormat" :options="options"></b-form-select>
@@ -50,9 +57,11 @@
 
 <script>
 import Header from "./Header"
+import Loading from "./Loading"
 export default {
   components: {
-    Header
+    Header,
+    Loading
   },
   name: "tweetSearch",
   data(){
@@ -60,12 +69,14 @@ export default {
       user_name: '',
       url: "http://twitter.com/",
       twData: "",
-      query: "",
+      verifier: "",
       tweetCount: 200,
       searchWord: "",
       loading: false,
-      loaded: false,
-      selected: null,
+      statusCode: Number,
+      selectedDisplayFormat: String,
+      perPage: 20,
+    currentPage: 1,
       options: [
         {value: 'デフォルト', text: 'デフォルト' },
         {value: 'リツイート数が多い順', text: 'リツイート数が多い順' },
@@ -76,7 +87,12 @@ export default {
   },
   mounted() {
     if (localStorage.key) {
-      this.query = sessionStorage.getItem("key");
+      this.verifier = sessionStorage.getItem("key");
+    }
+  },
+  computed: {
+    rows() {
+      return this.twData.length
     }
   },
   methods: {
@@ -87,47 +103,23 @@ export default {
           user_name: this.user_name,
           tweet_count: this.tweetCount,
           search_word: this.searchWord,
-          oauth_verifier: this.query
+          oauth_verifier: this.verifier
         }
       })
       .then((response) =>{
-        console.log(response.data.tw_data[0])
-        this.twData = response.data.tw_data
+        console.log(response.data)
         this.loading = false
-        this.loaded = true
+        this.twData = response.data.tw_data
+        this.statusCode = response.status
       })
       .catch((e) => {
         console.log(e)
+        this.loading = false
+        this.statusCode = e.response.status
       });
-    },
-    sortTweetData(){
-      this.twData.sort(function(a, b) {
-        return b.status-a.status
-      })
-      console.log(this.twData)
-    },
-    sortUserData(){
-      this.twData.sort(function(a, b) {
-        return b.follower-a.follower
-      })
-      console.log(this.twData)
     }
+    //todo: sort
   }
-  //ツイート数でソート
 }
 </script>
 
-<style>
-
-/* #twData {
-  text-align: left;
-  overflow: auto;
-  height: 600px;
-  width: 1000px;
-},
-#loading{
-  width: 10%;
-  margin: 0 auto;
-  max-width: 500px;
-} */
-</style>

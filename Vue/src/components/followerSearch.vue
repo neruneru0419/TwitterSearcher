@@ -12,29 +12,8 @@
       <p>
         <b-button variant="primary" @click="getUserData(user_name)">フォロワー取得</b-button>
       </p>
-      <div id="loading" v-if="loading">
-        <b-alert variant="primary" show>
-          <p>loading...</p>
-          <div class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-          </div>
-        </b-alert>
-      </div>
-      <div id="errorScreen" v-if="loaded && statusCode==404">
-        <b-alert variant="danger" show>
-          <p>アカウントが見つかりませんでした。</p>
-        </b-alert>
-      </div>
-      <div id="errorScreen" v-if="loaded && statusCode==88">
-        <b-alert variant="danger" show>
-          <p>API制限です。時間を開けてもう一度お試しください。</p>
-        </b-alert>
-      </div><div id="errorScreen" v-if="loaded && statusCode==500">
-        <b-alert variant="danger" show>
-          <p>エラーが発生しました。</p>
-        </b-alert>
-      </div>
-      <Result :twData="twData" :loaded="loaded" :statusCode="statusCode"></Result>
+      <Loading :loading="loading" :statusCode="statusCode"></Loading>
+      <Result :twData="twData" :loading="loading" :statusCode="statusCode"></Result>
       <b-form-group label="表示順" description="検索結果の表示方法を選択してください">
         <b-form-select v-model="selectedDisplayFormat" :options="options"></b-form-select>
       </b-form-group>
@@ -48,10 +27,12 @@
 <script>
 import Header from "./Header"
 import Result from "./Result"
+import Loading from "./Loading"
 export default {
   components: {
     Header,
-    Result
+    Result,
+    Loading
   },
   name: 'followerSearch',
   data(){
@@ -59,12 +40,9 @@ export default {
       statusCode: Number,
       followerCount: null,
       user_name: '',
-      url: "http://twitter.com/",
-      icons: "",
+      verifier : '',
       twData: Object,
       loading: false,
-      loaded: false,
-      verifier : "",
       selectedDisplayFormat: String,
       options: [
         {value: 'デフォルト', text: 'デフォルト' },
@@ -103,9 +81,7 @@ export default {
       });
     },
     sortData(){
-      
       if (this.selectedDisplayFormat == "フォロー数が多い順") {
-        scrollTo(0, 0);
         this.twData.sort(function(a, b) {
           return b.friends - a.friends
         })

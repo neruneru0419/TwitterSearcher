@@ -12,13 +12,13 @@ from twitter_oauth import TwitterOAuth
 
 def get_userdata_worker(i, api, followers_data_list, followers_ids_list, queue):
     print("start")
-    for i in api.lookup_users(user_ids=followers_ids_list[i:i+100]):
-        followers_data_list.append({"user_name": i.name,
-                                    "user_icon": i.profile_image_url_https,
-                                    "status": i.statuses_count,
-                                    "follower": i.followers_count,
-                                    "friends": i.friends_count,
-                                    "screen_name": i.screen_name})
+    for user_data in api.lookup_users(user_ids=followers_ids_list[i:i+100]):
+        followers_data_list.append({"user_name": user_data.name,
+                                    "user_icon": user_data.profile_image_url_https,
+                                    "status": user_data.statuses_count,
+                                    "follower": user_data.followers_count,
+                                    "friends": user_data.friends_count,
+                                    "screen_name": user_data.screen_name})
     queue.get()
     queue.task_done()
     print("end")
@@ -76,15 +76,10 @@ def get_follower():
             if queue.empty():
                 break
         print(len(followers_data_list))
-        statuscode = 200
     except tweepy.error.TweepError as e:
-        print(e.reason)
+        print(e.response.status_code)
         followers_data_list = []
-        code = ast.literal_eval(e.reason)[0]["code"]
-        if code == 34:
-            statuscode = 404
-        elif code == 88:
-            statuscode = 88
+        statuscode = e.response.status_code 
     return jsonify({"tw_data": followers_data_list}), statuscode
 
 @app.route("/tweetdata")
@@ -93,8 +88,8 @@ def get_tweet():
     verifier = request.values.get('oauth_verifier')
     tw_oauth.oauth()
     tw_oauth.search_set_access_token(verifier)
-
     api = tw_oauth.get_API(wait_on_rate_limit=True)
+    statuscode = 200
     if request.args.get('tweet_count'):
         tweet_count = int(request.args.get('tweet_count'))
     else:
@@ -103,8 +98,6 @@ def get_tweet():
         search_word = request.args.get('search_word')
     else:
         search_word = None
-    print(type(user_name))
-    print(type(tweet_count))
     followers_timeline = tweepy.Cursor(api.user_timeline,
                                         include_rts = True,
                                         screen_name = user_name,
@@ -112,15 +105,19 @@ def get_tweet():
     tweet_list = []
     try:
         for followers_tweet in followers_timeline:
-            if (not search_word) or (search_word in followers_tweet.text):
+            if (not search_word) or search_word in followers_tweet.text:
                 tweet_list.append({"tweet": followers_tweet.text,
                                    "retweet_count": followers_tweet.retweet_count,
-                                   "favorite_count": followers_tweet.favorite_count})
+                                   "favorite_count": followers_tweet.favorite_count,
+                                   "user_icon": followers_tweet.user.profile_image_url_https,
+                                   "user_name": followers_tweet.user.name,
+                                   "screen_name": followers_tweet.user.screen_name,})
             if len(tweet_list) == tweet_count:
                 break
     except tweepy.error.TweepError as e:
-        print (e.reason)
-    return jsonify({"tw_data": tweet_list})
+        print(e.response.status_code)
+        statuscode = e.response.status_code
+    return jsonify({"tw_data": tweet_list}), statuscode
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
