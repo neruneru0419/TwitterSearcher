@@ -1,31 +1,6 @@
 <template>
   
-  <div v-if="!loading && statusCode==200">
-    <div id="twData" class="w-100" :per-page="perPage" :current-page="currentPage" style="height:600px; overflow-y:scroll; text-align: left;">
-        <div v-for="i in twData.slice((currentPage*perPage) - perPage, currentPage*perPage)" :key="i.id">
-          <b-card>
-            <a :href="'http://twitter.com/' + i.screen_name">
-              <img :src="i.user_icon" />
-            </a>
-              {{i.user_name}}
-              <a :href="'http://twitter.com/' + i.screen_name">
-                @{{i.screen_name}}
-              </a>
-            <b-card-text>
-              ツイート数{{i.status}} フォロー数{{i.friends}} フォロワー数{{i.follower}}
-            </b-card-text>
-          </b-card>
-        </div>
-    </div>
-    <b-pagination
-      v-model="currentPage"
-      onclick="document.getElementById('twData').scrollTo(100, 0);"
-      :total-rows="rows"
-      :per-page="perPage"
-      aria-controls="twData"
-      limit=10
-    ></b-pagination>
-  </div>
+  
 </template>
 
 <script>

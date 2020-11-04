@@ -4,7 +4,7 @@
     <h2 class="my-3">フォロワー検索</h2>
     <b-container>
       <b-form-group label="アカウント名" description="TwitterIDを入力してください">
-        <b-form-input v-model="user_name" placeholder="@"></b-form-input>
+        <b-form-input v-model="user_name" placeholder=""></b-form-input>
       </b-form-group>
       <b-form-group label="カウント数" description="フォロワーを何人取得するか入力してください">
         <b-form-input v-model="followerCount" placeholder=""></b-form-input>
@@ -13,7 +13,32 @@
         <b-button variant="primary" @click="getUserData(user_name)">フォロワー取得</b-button>
       </p>
       <Loading :loading="loading" :statusCode="statusCode"></Loading>
-      <Result :twData="twData" :loading="loading" :statusCode="statusCode"></Result>
+      <div v-if="!loading && statusCode==200">
+        <div id="twData" class="w-100" :per-page="perPage" :current-page="currentPage" style="height:600px; overflow-y:scroll; text-align: left;">
+          <div v-for="i in twData.slice((currentPage*perPage) - perPage, currentPage*perPage)" :key="i.id">
+            <b-card>
+              <a :href="'http://twitter.com/' + i.screen_name">
+                <img :src="i.user_icon" />
+              </a>
+                {{i.user_name}}
+                <a :href="'http://twitter.com/' + i.screen_name">
+                  @{{i.screen_name}}
+                </a>
+              <b-card-text>
+                ツイート数{{i.status}} フォロー数{{i.friends}} フォロワー数{{i.follower}}
+              </b-card-text>
+            </b-card>
+          </div>
+        </div>
+        <b-pagination
+          v-model="currentPage"
+          onclick="document.getElementById('twData').scrollTo(100, 0);"
+          :total-rows="rows"
+          :per-page="perPage"
+          aria-controls="twData"
+          limit=10
+        ></b-pagination>
+      </div>
       <b-form-group label="表示順" description="検索結果の表示方法を選択してください">
         <b-form-select v-model="selectedDisplayFormat" :options="options"></b-form-select>
       </b-form-group>
@@ -26,12 +51,10 @@
 
 <script>
 import Header from "./Header"
-import Result from "./Result"
 import Loading from "./Loading"
 export default {
   components: {
     Header,
-    Result,
     Loading
   },
   name: 'followerSearch',
@@ -44,8 +67,9 @@ export default {
       twData: Object,
       loading: false,
       selectedDisplayFormat: String,
+      perPage: 20,
+      currentPage: 1,
       options: [
-        {value: 'デフォルト', text: 'デフォルト' },
         {value: 'フォロワー数が多い順', text: 'フォロワー数が多い順' },
         {value: 'フォロー数が多い順', text: 'フォロー数が多い順' },
         {value: 'フォロワー-フォロー数が多い順', text: 'フォロワー-フォロー数が多い順' },
@@ -53,10 +77,15 @@ export default {
       ]
     }
   },
-   mounted() {
+  mounted() {
     if (localStorage.key) {
       this.verifier = sessionStorage.getItem("key");
     }
+  },
+  computed: {
+      rows() {
+        return this.twData.length
+      }
   },
   methods: {
     getUserData(){
@@ -101,6 +130,8 @@ export default {
           return b.status-a.status
         })
       }
+      this.currentPage = 1
+      document.getElementById('twData').scrollTo(100, 0)
     }
   }
 }

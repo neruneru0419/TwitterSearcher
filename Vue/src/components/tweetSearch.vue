@@ -4,7 +4,7 @@
     <h2 class="my-3">ツイート検索</h2>
     <b-container>
       <b-form-group label="アカウント名" description="TwitterIDを入力してください">
-        <b-form-input v-model="user_name" placeholder="@"></b-form-input>
+        <b-form-input v-model="user_name" placeholder=""></b-form-input>
       </b-form-group>
       <b-form-group label="カウント数" description="ツイートを何件取得するか入力してください">
         <b-form-input v-model="tweetCount" placeholder=""></b-form-input>
@@ -31,6 +31,9 @@
                 <b-card-text>
                   {{i.tweet}}
                   <p>
+                    {{parseDataTime(i.created_at)}}
+                  </p>
+                  <p>
                     リツイート数{{i.retweet_count}}
                     いいね数{{i.favorite_count}}
                   </p>
@@ -50,7 +53,9 @@
       <b-form-group label="表示順" description="検索結果の表示方法を選択してください">
         <b-form-select v-model="selectedDisplayFormat" :options="options"></b-form-select>
       </b-form-group>
-      
+      <p>
+        <b-button variant="primary" @click="sortData(user_name)">並び替え</b-button>
+      </p>
     </b-container> 
   </div>
 </template>
@@ -70,7 +75,7 @@ export default {
       url: "http://twitter.com/",
       twData: "",
       verifier: "",
-      tweetCount: 200,
+      tweetCount: "",
       searchWord: "",
       loading: false,
       statusCode: Number,
@@ -117,8 +122,32 @@ export default {
         this.loading = false
         this.statusCode = e.response.status
       });
+    },
+    sortData(){
+      if (this.selectedDisplayFormat == "リツイート数が多い順") {
+        this.twData.sort(function(a, b) {
+          return b.retweet_count - a.retweet_count
+        })
+      }
+      else if (this.selectedDisplayFormat == "いいね数が多い順") {
+        this.twData.sort(function(a, b) {
+          return b.favorite_count - a.favorite_count
+        })
+      }
+      this.currentPage = 1
+      document.getElementById('twData').scrollTo(100, 0)
+    },
+    parseDataTime(created_at){
+        //午後5:37 · 2020年10月26日
+        this.date = new Date(created_at)
+        this.hour = this.date.getHours()
+        this.minute = this.date.getMinutes()
+        this.year = this.date.getFullYear()
+        this.month = this.date.getMonth()
+        this.day = this.date.getDate()
+        this.datetime = this.hour + ":" + this.minute + " " + this.year + "年" + this.month + "月" + this.day + "日"
+        return this.datetime
     }
-    //todo: sort
   }
 }
 </script>

@@ -99,9 +99,10 @@ def get_tweet():
     else:
         search_word = None
     followers_timeline = tweepy.Cursor(api.user_timeline,
-                                        include_rts = True,
                                         screen_name = user_name,
-                                        cursor = -1).items()
+                                        cursor = -1,
+                                        include_rts = False,
+                                        exclude_replies = False).items()
     tweet_list = []
     try:
         for followers_tweet in followers_timeline:
@@ -111,7 +112,8 @@ def get_tweet():
                                    "favorite_count": followers_tweet.favorite_count,
                                    "user_icon": followers_tweet.user.profile_image_url_https,
                                    "user_name": followers_tweet.user.name,
-                                   "screen_name": followers_tweet.user.screen_name,})
+                                   "screen_name": followers_tweet.user.screen_name,
+                                   "created_at": followers_tweet.created_at})
             if len(tweet_list) == tweet_count:
                 break
     except tweepy.error.TweepError as e:

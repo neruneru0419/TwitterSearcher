@@ -128,7 +128,7 @@ dmypy.json
 .pyre/
 
 #database
-.db
+tw.db
 
 #node
 node_modules
