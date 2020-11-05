@@ -6,9 +6,6 @@
       <b-form-group label="アカウント名" description="TwitterIDを入力してください">
         <b-form-input v-model="user_name" placeholder=""></b-form-input>
       </b-form-group>
-      <b-form-group label="カウント数" description="フォロワーを何人取得するか入力してください">
-        <b-form-input v-model="followerCount" placeholder=""></b-form-input>
-      </b-form-group>
       <p>
         <b-button variant="primary" @click="getUserData(user_name)">フォロワー取得</b-button>
       </p>
@@ -61,7 +58,6 @@ export default {
   data(){
     return {
       statusCode: Number,
-      followerCount: null,
       user_name: '',
       verifier : '',
       twData: Object,
@@ -78,8 +74,8 @@ export default {
     }
   },
   mounted() {
-    if (localStorage.key) {
-      this.verifier = sessionStorage.getItem("key");
+    if (sessionStorage.key) {
+      this.verifier = sessionStorage.getItem("oauthVerifier");
     }
   },
   computed: {

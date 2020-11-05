@@ -2,7 +2,7 @@
 export default {
   name: 'getapikey',
   created : function(){
-    sessionStorage.setItem('key', this.$route.query.oauth_verifier)
+    sessionStorage.setItem('oauthVerifier', this.$route.query.oauth_verifier)
     console.log('created')
     this.axios.get("/setapikey", {
         params: {
@@ -10,7 +10,7 @@ export default {
         }
       })
       .then(() =>{
-        location.href='http://127.0.0.1:8888/followersearch'
+        console.log("hoge")
       })
       .catch((e) => {
         console.log(e.response)

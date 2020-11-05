@@ -6,12 +6,6 @@
       <b-form-group label="アカウント名" description="TwitterIDを入力してください">
         <b-form-input v-model="user_name" placeholder=""></b-form-input>
       </b-form-group>
-      <b-form-group label="カウント数" description="ツイートを何件取得するか入力してください">
-        <b-form-input v-model="tweetCount" placeholder=""></b-form-input>
-      </b-form-group>
-      <b-form-group label="検索ワード" description="ツイート内容を入力してください">
-        <b-form-input v-model="searchWord" placeholder=""></b-form-input>
-      </b-form-group>
       <p>
         <b-button variant="primary" @click="getTweetData(user_name)">ツイート取得</b-button>
       </p>
@@ -72,27 +66,23 @@ export default {
   data(){
     return {
       user_name: '',
-      url: "http://twitter.com/",
       twData: "",
       verifier: "",
-      tweetCount: "",
-      searchWord: "",
       loading: false,
       statusCode: Number,
       selectedDisplayFormat: String,
       perPage: 20,
-    currentPage: 1,
-      options: [
-        {value: 'デフォルト', text: 'デフォルト' },
-        {value: 'リツイート数が多い順', text: 'リツイート数が多い順' },
-        {value: 'いいね数が多い順', text: 'いいね数が多い順' },
-        //{value: 'ツイートアクティビティが多い順', text: 'ツイートアクティビティが多い順' },
-      ]
-    }
+      currentPage: 1,
+        options: [
+          {value: 'デフォルト', text: 'デフォルト' },
+          {value: 'リツイート数が多い順', text: 'リツイート数が多い順' },
+          {value: 'いいね数が多い順', text: 'いいね数が多い順' },
+        ]
+      }
   },
   mounted() {
-    if (localStorage.key) {
-      this.verifier = sessionStorage.getItem("key");
+    if (sessionStorage.key) {
+      this.verifier = sessionStorage.getItem("oauthVerifier");
     }
   },
   computed: {
@@ -106,8 +96,6 @@ export default {
       this.axios.get("/tweetdata", {
         params: {
           user_name: this.user_name,
-          tweet_count: this.tweetCount,
-          search_word: this.searchWord,
           oauth_verifier: this.verifier
         }
       })

@@ -1,7 +1,6 @@
 from flask import Flask,redirect, request, jsonify, render_template
 from flask_cors import CORS
 import tweepy
-import ast
 import os
 from queue import Queue
 import threading
@@ -33,21 +32,23 @@ CORS(app)
 consumer_key = os.getenv("consumer_key")
 consumer_secret = os.getenv("consumer_secret")
 #oauth_callback = "http://twittersearcher.neruneru0419.com/getapikey"
-oauth_callback = "http://127.0.0.1:8888/getapikey"
+oauth_callback = "http://127.0.0.1:8888/setapikey"
+oauth_redirectURL = "/followersearch"
 tw_oauth = TwitterOAuth(consumer_key, consumer_secret, oauth_callback)
 @app.route("/oauth")
 def oauth_app():
+    global oauth_redirectURL
     tw_oauth.oauth()
     redirect_url = tw_oauth.get_authorization_url()
-    print(redirect_url)
+    oauth_redirectURL = "/" + request.values.get('redirectURL')
     return redirect(redirect_url)
 
 @app.route("/setapikey")
 def set_apikey():
     verifier = request.values.get('oauth_verifier')
+    print(verifier)
     tw_oauth.set_access_token(verifier)
-    
-    return redirect("/followersearch")
+    return redirect(oauth_redirectURL)
 
 @app.route("/followerdata")
 def get_follower():
