@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from './components/Login.vue'
-import Result from './components/Result.vue'
 import TweetSearch from './components/tweetSearch.vue'
 import FollowerSearch from './components/followerSearch.vue'
 import GetAPIKey from './components/GetAPIKey.vue'
@@ -33,10 +32,6 @@ export default new Router({
       path: '/getapikey',
       name: 'getapikey',
       component: GetAPIKey
-    },
-    {
-      path: '/result',
-      component: Result
     },
     {
       path : '*',

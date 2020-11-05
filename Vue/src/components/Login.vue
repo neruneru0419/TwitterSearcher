@@ -5,7 +5,7 @@
         <h1>
           Tweet Searcher
         </h1>
-      <p>フォロワーだったりツイートの検索ツール</p>
+      <p>TwitterSearcherはTwitterのフォロワーだったりツイートの検索ツールです</p>
       <p><b-button variant="primary" onclick="location.href='/oauth'">ログインして始める</b-button></p>
     </b-container> 
   </div>

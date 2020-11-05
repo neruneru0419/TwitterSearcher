@@ -120,7 +120,6 @@ def get_tweet():
         print(e.response.status_code)
         statuscode = e.response.status_code
     return jsonify({"tw_data": tweet_list}), statuscode
-
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def index(path):
