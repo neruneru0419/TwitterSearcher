@@ -34,4 +34,4 @@ class TwitterOAuth():
         self.auth.set_access_token(token, secret_token)
 
     def get_API(self, wait_on_rate_limit=False) -> tweepy.API:
-        return tweepy.API(self.auth, wait_on_rate_limit)
+        return tweepy.API(self.auth)

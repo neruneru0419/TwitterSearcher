@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Login from './components/Login.vue'
 import TweetSearch from './components/tweetSearch.vue'
 import FollowerSearch from './components/followerSearch.vue'
-import getAPIKey from './components/getAPIKey.vue'
+import getAPIKey from './components/GetAPIKey.vue'
 import NotFound from './components/NotFound.vue'
 
 

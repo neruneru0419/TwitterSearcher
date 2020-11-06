@@ -10,8 +10,8 @@ export default {
           oauth_verifier: this.$route.query.oauth_verifier,
         },
       })
-      .then(() => {
-        console.log("hoge");
+      .then((response) => {
+        location.href=response.data
       })
       .catch((e) => {
         console.log(e.response);

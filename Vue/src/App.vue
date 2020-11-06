@@ -4,3 +4,11 @@
   </div>
 </template>
 
+<style>
+  #app {
+    text-align: center;
+  }
+  h1{
+    margin: 0 auto;
+  }
+</style>

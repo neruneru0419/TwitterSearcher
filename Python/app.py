@@ -21,6 +21,7 @@ def get_userdata_worker(i, api, followers_data_list, followers_ids_list, queue):
     queue.task_done()
     print("end")
 
+
     # print(followers_data_list)
 app = Flask(__name__,
             static_folder="../Vue/dist/static",
@@ -31,7 +32,7 @@ CORS(app)
 consumer_key = os.getenv("consumer_key")
 consumer_secret = os.getenv("consumer_secret")
 #oauth_callback = "http://twittersearcher.neruneru0419.com/getapikey"
-oauth_callback = "http://127.0.0.1:8888/setapikey"
+oauth_callback = "http://127.0.0.1:8888/getapikey"
 oauth_redirectURL = "/followersearch"
 tw_oauth = TwitterOAuth(consumer_key, consumer_secret, oauth_callback)
 
@@ -41,7 +42,7 @@ def oauth_app():
     global oauth_redirectURL
     tw_oauth.oauth()
     redirect_url = tw_oauth.get_authorization_url()
-    oauth_redirectURL = "/" + request.values.get('redirectURL')
+    oauth_redirectURL = request.values.get('redirectURL')
     return redirect(redirect_url)
 
 
@@ -50,7 +51,7 @@ def set_apikey():
     verifier = request.values.get('oauth_verifier')
     print(verifier)
     tw_oauth.set_access_token(verifier)
-    return redirect(oauth_redirectURL)
+    return oauth_redirectURL
 
 
 @app.route("/followerdata")
