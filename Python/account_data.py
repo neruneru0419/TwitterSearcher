@@ -1,13 +1,16 @@
 import sqlite3
 
+
 class AccountData():
     def __init__(self, dbname: str):
         self.dbname = dbname
         conn = sqlite3.connect(self.dbname)
         c = conn.cursor()
-        c.execute('''CREATE TABLE if not exists users(verifier text, token text, secret_token text)''')
+        c.execute(
+            '''CREATE TABLE if not exists users(verifier text, token text, secret_token text)''')
         conn.commit()
         conn.close()
+
     def insert_verifier(self, verifier: str, token: str, secret_token: str):
         conn = sqlite3.connect(self.dbname)
         c = conn.cursor()
@@ -22,6 +25,7 @@ class AccountData():
             c.execute(sql, data)
         conn.commit()
         conn.close()
+
     def select_token(self, token: str) -> bool:
         conn = sqlite3.connect(self.dbname)
         c = conn.cursor()
@@ -31,6 +35,7 @@ class AccountData():
         exist_token = bool(c.fetchone())
         conn.close()
         return exist_token
+
     def select_verifier(self, verifier: str) -> list:
         conn = sqlite3.connect(self.dbname)
         c = conn.cursor()

@@ -1,4 +1,4 @@
-from flask import Flask,redirect, request, jsonify, render_template
+from flask import Flask, redirect, request, jsonify, render_template
 from flask_cors import CORS
 import tweepy
 import os
@@ -6,7 +6,6 @@ from queue import Queue
 import threading
 
 from twitter_oauth import TwitterOAuth
-
 
 
 def get_userdata_worker(i, api, followers_data_list, followers_ids_list, queue):
@@ -21,11 +20,11 @@ def get_userdata_worker(i, api, followers_data_list, followers_ids_list, queue):
     queue.get()
     queue.task_done()
     print("end")
-    
-    #print(followers_data_list)
+
+    # print(followers_data_list)
 app = Flask(__name__,
-            static_folder = "../Vue/dist/static",
-            template_folder = "../Vue/dist")
+            static_folder="../Vue/dist/static",
+            template_folder="../Vue/dist")
 
 app.secret_key = os.urandom(12)
 CORS(app)
@@ -35,6 +34,8 @@ consumer_secret = os.getenv("consumer_secret")
 oauth_callback = "http://127.0.0.1:8888/setapikey"
 oauth_redirectURL = "/followersearch"
 tw_oauth = TwitterOAuth(consumer_key, consumer_secret, oauth_callback)
+
+
 @app.route("/oauth")
 def oauth_app():
     global oauth_redirectURL
@@ -43,12 +44,14 @@ def oauth_app():
     oauth_redirectURL = "/" + request.values.get('redirectURL')
     return redirect(redirect_url)
 
+
 @app.route("/setapikey")
 def set_apikey():
     verifier = request.values.get('oauth_verifier')
     print(verifier)
     tw_oauth.set_access_token(verifier)
     return redirect(oauth_redirectURL)
+
 
 @app.route("/followerdata")
 def get_follower():
@@ -58,8 +61,9 @@ def get_follower():
     tw_oauth.oauth()
     tw_oauth.search_set_access_token(verifier)
     statuscode = 200
-    api = tw_oauth.get_API(wait_on_rate_limit = True)
-    followers_ids = tweepy.Cursor(api.followers_ids, screen_name = user_name, cursor = -1).items()
+    api = tw_oauth.get_API(wait_on_rate_limit=True)
+    followers_ids = tweepy.Cursor(
+        api.followers_ids, screen_name=user_name, cursor=-1).items()
     followers_ids_list = []
     followers_data_list = []
     queue = Queue()
@@ -67,11 +71,11 @@ def get_follower():
     try:
         for followers_id in followers_ids:
             followers_ids_list.append(followers_id)
-            
+
         for i in range(0, len(followers_ids_list), 100):
             queue.put(i)
-            thread = threading.Thread(target=get_userdata_worker, 
-                                            args=(i,api,followers_data_list,followers_ids_list, queue))
+            thread = threading.Thread(target=get_userdata_worker,
+                                      args=(i, api, followers_data_list, followers_ids_list, queue))
             thread.start()
         while True:
             if queue.empty():
@@ -80,8 +84,9 @@ def get_follower():
     except tweepy.error.TweepError as e:
         print(e.response.status_code)
         followers_data_list = []
-        statuscode = e.response.status_code 
+        statuscode = e.response.status_code
     return jsonify({"tw_data": followers_data_list}), statuscode
+
 
 @app.route("/tweetdata")
 def get_tweet():
@@ -100,10 +105,10 @@ def get_tweet():
     else:
         search_word = None
     followers_timeline = tweepy.Cursor(api.user_timeline,
-                                        screen_name = user_name,
-                                        cursor = -1,
-                                        include_rts = False,
-                                        exclude_replies = False).items()
+                                       screen_name=user_name,
+                                       cursor=-1,
+                                       include_rts=False,
+                                       exclude_replies=False).items()
     tweet_list = []
     try:
         for followers_tweet in followers_timeline:
@@ -121,10 +126,13 @@ def get_tweet():
         print(e.response.status_code)
         statuscode = e.response.status_code
     return jsonify({"tw_data": tweet_list}), statuscode
+
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def index(path):
     return render_template("index.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='127.0.0.1', port=8888)

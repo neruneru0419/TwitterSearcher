@@ -2,45 +2,46 @@
   <div class="Login">
     <Header></Header>
     <b-container>
-        <h1>Tweet Searcher</h1>
-      <p>TwitterSearcherはTwitterのフォロワーだったりツイートの検索ツールです。</p>
+      <h1>Tweet Searcher</h1>
+      <p>
+        TwitterSearcherはTwitterのフォロワーだったりツイートの検索ツールです。
+      </p>
       <p>このサイトはTwitterアカウントが必要です。</p>
-        <h2>フォロワー検索</h2>
-        <p>対象のアカウントのフォロワーについて調べることができます。</p>
-        <p><b-button variant="primary" href='/oauth?redirectURL=followersearch'>ログインしてフォロワー検索を始める</b-button></p>
-        <h2>ツイート検索</h2>
-        <p>対象のアカウントのツイートについて調べることができます。</p>
-        <p><b-button variant="primary" href='/oauth?redirectURL=tweetsearch'>ログインしてツイート検索を始める</b-button></p>
-    </b-container> 
+      <h2>フォロワー検索</h2>
+      <p>対象のアカウントのフォロワーについて調べることができます。</p>
+      <p>
+        <b-button variant="primary" href="/oauth?redirectURL=followersearch"
+          >ログインしてフォロワー検索を始める</b-button
+        >
+      </p>
+      <h2>ツイート検索</h2>
+      <p>対象のアカウントのツイートについて調べることができます。</p>
+      <p>
+        <b-button variant="primary" href="/oauth?redirectURL=tweetsearch"
+          >ログインしてツイート検索を始める</b-button
+        >
+      </p>
+    </b-container>
   </div>
 </template>
 
 <script>
-import Header from "./Header"
+import Header from "./Header";
 export default {
   components: {
-    Header
+    Header,
   },
   name: "Login",
-  data(){
+  data() {
     return {
-      user_name: '',
+      user_name: "",
       url: "http://twitter.com/",
       names: "",
       icons: "",
       twData: "",
       loading: false,
-      loaded: false
-    }
-  }
-}
+      loaded: false,
+    };
+  },
+};
 </script>
-
-<style>
-  #app {
-    text-align: center;
-  }
-  h1{
-    margin: 0 auto;
-  }
-</style>
