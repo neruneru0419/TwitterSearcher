@@ -8,7 +8,8 @@ class TwitterOAuth():
         self.consumer_secret = cs
         self.oauth_callback = oc
         self.auth = ""
-        self.account_data = AccountData("tw.db")
+
+        self.account_data = AccountData("postgres")
 
     def oauth(self):
         self.auth = tweepy.OAuthHandler(
