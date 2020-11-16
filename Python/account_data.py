@@ -5,7 +5,7 @@ import os
 class AccountData():
     def __init__(self, dbname: str):
         self.dbname = dbname
-        self.postgersql_password = os.getenv("posgresql_password")
+        self.postgersql_password = "neru760419"
         conn = psycopg2.connect(
             user=self.dbname, password=self.postgersql_password)
         c = conn.cursor()
