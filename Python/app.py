@@ -31,8 +31,8 @@ app.secret_key = os.urandom(12)
 CORS(app)
 consumer_key = os.getenv("consumer_key")
 consumer_secret = os.getenv("consumer_secret")
-#oauth_callback = "http://twittersearcher.neruneru0419.com/getapikey"
-oauth_callback = "http://127.0.0.1:8888/getapikey"
+oauth_callback = "https://neruneru-twitter-searcher.herokuapp.com/getapikey"
+#oauth_callback = "http://127.0.0.1:8888/getapikey"
 oauth_redirectURL = "/followersearch"
 tw_oauth = TwitterOAuth(consumer_key, consumer_secret, oauth_callback)
 
@@ -136,5 +136,5 @@ def index(path):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='127.0.0.1', port=8888)
-    #app.run(debug=True, host='0.0.0.0', port=80)
+    #app.run(debug=True, host='127.0.0.1', port=8888)
+    app.run(debug=True, host='0.0.0.0', port=80)
