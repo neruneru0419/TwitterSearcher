@@ -14,8 +14,7 @@ class AccountData():
         conn.close()
 
     def insert_verifier(self, verifier: str, token: str, secret_token: str):
-        conn = psycopg2.connect(
-            user=self.dbname, password=self.postgersql_password)
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
 
         c = conn.cursor()
         exist_token = self.select_token(token)
@@ -32,8 +31,7 @@ class AccountData():
         conn.close()
 
     def select_token(self, token: str) -> bool:
-        conn = psycopg2.connect(
-            user=self.dbname, password=self.postgersql_password)
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
         c = conn.cursor()
         sql = ("""select pgp_sym_decrypt(bytea(verifier), 'my_pass'), 
                 pgp_sym_decrypt(bytea(token), 'my_pass'), 
@@ -46,8 +44,7 @@ class AccountData():
         return exist_token
 
     def select_verifier(self, verifier: str) -> list:
-        conn = psycopg2.connect(
-            user=self.dbname, password=self.postgersql_password)
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
         c = conn.cursor()
         sql = ("""select pgp_sym_decrypt(bytea(verifier), 'my_pass'), 
                 pgp_sym_decrypt(bytea(token), 'my_pass'), 
