@@ -5,9 +5,8 @@ import os
 class AccountData():
     def __init__(self, dbname: str):
         self.dbname = dbname
-        self.postgersql_password = os.getenv["password"]
-        conn = psycopg2.connect(
-            user=self.dbname, password=self.postgersql_password)
+        #self.postgersql_password = os.getenv["password"]
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
         c = conn.cursor()
         c.execute("create extension if not exists pgcrypto")
         c.execute("create table if not exists users (verifier text, token text, secret_token text)")
