@@ -33,9 +33,7 @@ class AccountData():
     def select_token(self, token: str) -> bool:
         conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
         c = conn.cursor()
-        sql = ("""select pgp_sym_decrypt(bytea(verifier), 'my_pass'), 
-                pgp_sym_decrypt(bytea(token), 'my_pass'), 
-                pgp_sym_decrypt(bytea(secret_token), 'my_pass') 
+        sql = ("""select pgp_sym_decrypt(bytea(verifier), 'my_pass'), pgp_sym_decrypt(bytea(token), 'my_pass'), pgp_sym_decrypt(bytea(secret_token), 'my_pass') 
                 from users where pgp_sym_decrypt(bytea(verifier), 'my_pass') = %s""")
         data = (token,)
         c.execute(sql, data)

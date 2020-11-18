@@ -50,6 +50,7 @@ def oauth_app():
 def set_apikey():
     verifier = request.values.get('oauth_verifier')
     print(verifier)
+    print(type(verifier))
     tw_oauth.set_access_token(verifier)
     return oauth_redirectURL
 
