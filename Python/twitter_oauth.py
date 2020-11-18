@@ -22,6 +22,7 @@ class TwitterOAuth():
 
     def set_access_token(self, verifier: str):
         print(verifier)
+        print(type(verifier))
         self.auth.get_access_token(verifier)
         token = self.auth.access_token
         secret_token = self.auth.access_token_secret
