@@ -22,6 +22,7 @@ class AccountData():
             sql = (
                 "update users set verifier = pgp_sym_encrypt(%s, 'my_pass') where token = pgp_sym_encrypt(%s, 'my_pass')")
             data = (verifier, token)
+
             c.execute(sql, data)
         else:
             sql = ("insert into users values (pgp_sym_encrypt(%s, 'my_pass'), pgp_sym_encrypt(%s, 'my_pass'), pgp_sym_encrypt(%s, 'my_pass'))")
