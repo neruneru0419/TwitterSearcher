@@ -2,7 +2,7 @@
   <div class="Login">
     <Header></Header>
     <b-container>
-        <h1>Tweet Searcher</h1>
+        <h1>Twitter Searcher</h1>
         <p>TwitterSearcherはTwitterのフォロワーだったりツイートの検索ツールです。</p>
         <p>このサイトはTwitterアカウントが必要です。</p>
         <h2>フォロワー検索</h2>

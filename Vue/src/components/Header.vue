@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-navbar toggleable="sm" type="dark" variant="info" class=shadow >
-      <b-navbar-brand active to="/">Tweet Searcher</b-navbar-brand>
+      <b-navbar-brand active to="/">Twitter Searcher</b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
