@@ -1,1 +1,0 @@
-web: gunicorn  --chdir Python app:app --log-file=-
